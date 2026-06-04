@@ -1,0 +1,14 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  generate-password:
+    lang: python3-flask
+    handler: ./generate-password
+    image: ttl.sh/cofrap-mspr-generate-password:1m
+    environment:
+      DB_HOST: "postgres-postgresql.postgres.svc.cluster.local"
+      DB_NAME: "cofrap_auth"
+      DB_USER: "cofrap_user"
+      DB_PWD: "cofrap_pwd"

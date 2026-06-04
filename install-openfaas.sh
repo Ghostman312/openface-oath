@@ -10,5 +10,4 @@ helm upgrade openfaas --install openfaas/openfaas \
 PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode)
 echo "Username: admin"
 echo "Password: $PASSWORD"
-kubectl port-forward svc/gateway -n openfaas 8080:8080
 echo "Use these username and password to access OpenFaas web interface if needed at the address http://127.0.0.1:8080"
