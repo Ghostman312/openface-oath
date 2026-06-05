@@ -50,6 +50,6 @@ faas-cli template store pull python3-flask
 
 | Function | Base URL | Method | Request body | Successful response body | Error response(s) |
 |----------|----------|----------|----------|----------|----------|
-| generate-password | http://127.0.0.1:8080/function/generate-password | POST | `{ "username": "foo" }` | `{ "message": "User created successfully.", "password": "pwd", "statusCode": 201 }` | `400` if username is missing. `500` if internal server error |
-| generate-2fa | http://127.0.0.1:8080/function/generate-2fa | POST | `{ "username": "foo" }` | `{ "message": "TOTP created successfully.", "totp": "otpauth://totp/COFRAP:foo?secret=123456789ABCDEF&issuer=COFRAP" }` | `400` if username is missing. `500` if internal server error |
-| authenticate | http://127.0.0.1:8080/function/authenticate | POST | `{ "username": "foo", "password": "pwd", "totp_code": 123456 }` | `{ "authenticated": true }` | `400` and `{ "authenticated": false }` if username, password or TOTP code are missing, or if any of these are invalid. `500` if internal server error |
+| generate-password | http://127.0.0.1:8080/function/generate-password | POST | `{ "username": string }` | `{ "message": "User created successfully.", "password": string, "statusCode": 201 }` | `400` if username is missing. `500` if internal server error |
+| generate-2fa | http://127.0.0.1:8080/function/generate-2fa | POST | `{ "username": string }` | `{ "message": "TOTP created successfully.", "totp": string }` | `400` if username is missing. `500` if internal server error |
+| authenticate | http://127.0.0.1:8080/function/authenticate | POST | `{ "username": "foo", "password": string, "totp_code": number }` | `{ "authenticated": true }` | `400` and `{ "authenticated": false }` if username, password or TOTP code are missing, or if any of these are invalid. `500` if internal server error |
