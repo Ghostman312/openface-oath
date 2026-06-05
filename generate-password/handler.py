@@ -32,12 +32,14 @@ def handle(req):
 
         cur = conn.cursor()
 
+        cur.execute("DROP TABLE IF EXISTS users;")
+
         cur.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             username VARCHAR(255) UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
-            totp TEXT,
+            totp_key TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """)

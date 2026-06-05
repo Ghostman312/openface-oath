@@ -10,7 +10,8 @@ def handle(req):
         if not username:
             return {"statusCode": 400, "body": "Username required."}
 
-        uri = pyotp.totp.TOTP(base64.b32encode(secrets.token_bytes(20)).decode('utf-8')).provisioning_uri(
+        key = base64.b32encode(secrets.token_bytes(20)).decode('utf-8')
+        uri = pyotp.totp.TOTP(key).provisioning_uri(
             name=username,
             issuer_name=os.environ.get("ISSUER"))
 
@@ -26,10 +27,10 @@ def handle(req):
         cur.execute(
             """
             UPDATE users
-            SET totp = %s
+            SET totp_key = %s
             WHERE username = %s;
             """,
-            (uri, username))
+            (key, username))
         
         conn.commit()
         cur.close()

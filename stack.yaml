@@ -22,4 +22,12 @@ functions:
       DB_USER: "cofrap_user"
       DB_PWD: "cofrap_pwd"
       ISSUER: "COFRAP"
-      KEY: "SuperSecretKey"
+  authenticate:
+    lang: python3-flask
+    handler: ./authenticate
+    image: ttl.sh/cofrap-mspr-authenticate:1m
+    environment:
+      DB_HOST: "postgres-postgresql.postgres.svc.cluster.local"
+      DB_NAME: "cofrap_auth"
+      DB_USER: "cofrap_user"
+      DB_PWD: "cofrap_pwd"
