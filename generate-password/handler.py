@@ -1,4 +1,5 @@
 import bcrypt, string, secrets, json, psycopg2, os, logging
+from datetime import datetime, timedelta
 
 logging.basicConfig(level=logging.INFO)
 
@@ -40,20 +41,21 @@ def handle(req):
             username VARCHAR(255) UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
             totp_key TEXT,
+            password_expires_at TIMESTAMP,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """)
 
         cur.execute(
             """
-            INSERT INTO users (username, password_hash) 
-            VALUES (%s, %s)
+            INSERT INTO users (username, password_hash, password_expires_at) 
+            VALUES (%s, %s, %s)
             ON CONFLICT (username) 
             DO UPDATE SET 
                 password_hash = EXCLUDED.password_hash,
                 created_at = CURRENT_TIMESTAMP;
             """,
-            (username, hash.decode('utf-8')))
+            (username, hash.decode('utf-8'), datetime.now() + timedelta(days=180)))
         
         conn.commit()
         cur.close()

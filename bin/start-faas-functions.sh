@@ -1,3 +1,5 @@
+rm -rf ./build
+
 docker run --rm \
   -v "/$(pwd):/workspace" \
   -w "//workspace" \
