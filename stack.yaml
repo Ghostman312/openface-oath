@@ -11,4 +11,15 @@ functions:
       DB_HOST: "postgres-postgresql.postgres.svc.cluster.local"
       DB_NAME: "cofrap_auth"
       DB_USER: "cofrap_user"
+      DB_PWD: "cofrap_pwd"  
+  generate-2fa:
+    lang: python3-flask
+    handler: ./generate-2fa
+    image: ttl.sh/cofrap-mspr-generate-2fa:1m
+    environment:
+      DB_HOST: "postgres-postgresql.postgres.svc.cluster.local"
+      DB_NAME: "cofrap_auth"
+      DB_USER: "cofrap_user"
       DB_PWD: "cofrap_pwd"
+      ISSUER: "COFRAP"
+      KEY: "SuperSecretKey"

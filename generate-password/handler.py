@@ -23,7 +23,6 @@ def handle(req):
         if not username:
             return {"statusCode": 400, "body": "Username required."}
 
-        logging.info(f"DB_HOST:{os.environ.get('DB_HOST')} | DB_USER:{os.environ.get('DB_USER')} | DB_NAME:{os.environ.get('DB_NAME')}")
         conn = psycopg2.connect(
             host=os.environ.get("DB_HOST"),
             user=os.environ.get("DB_USER"),
@@ -38,6 +37,7 @@ def handle(req):
             id SERIAL PRIMARY KEY,
             username VARCHAR(255) UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
+            totp TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """)
