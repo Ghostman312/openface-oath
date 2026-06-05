@@ -8,7 +8,7 @@ def handle(req):
         username = payload.get("username")
 
         if not username:
-            return {"statusCode": 401, "body": "Username required."}
+            return {"statusCode": 400, "body": "Username required."}
 
         key = base64.b32encode(secrets.token_bytes(20)).decode('utf-8')
         uri = pyotp.totp.TOTP(key).provisioning_uri(

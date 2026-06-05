@@ -22,22 +22,22 @@ def handle(req):
         fetched_user = cur.fetchone()
 
         if fetched_user is None:
-            return { "authenticated": False, "message": "Invalid username." }, 401
+            return { "authenticated": False, "message": "Invalid username." }, 400
 
         password_hash = fetched_user[0]
         totp_key = fetched_user[1]
 
 
         if not bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8')):
-            return { "authenticated": False, "message": "Password required." }, 401
+            return { "authenticated": False, "message": "Password required." }, 400
 
 
         if totp_key is not None:
             if totp_code is None:
-                return { "authenticated": False, "message": "TOTP code required." }, 401
+                return { "authenticated": False, "message": "TOTP code required." }, 400
                     
         if not pyotp.TOTP(totp_key).verify(totp_code):
-            return { "authenticated": False, "message": "Invalid TOTP code." }, 401
+            return { "authenticated": False, "message": "Invalid TOTP code." }, 400
 
         return { "authenticated": True }, 200
 

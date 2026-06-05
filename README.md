@@ -6,12 +6,12 @@
 - [Docker](https://www.docker.com/) installed and running
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#install-kubectl-on-windows) installed
 - [Minikube](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download#Windows) installed
-- Ports `8080` and `5432` avaliable
+- Ports `8080` and `5432` available
 
 ## 2. Install
 ### 2.A Windows
 
-> All commands below are executed throught Git bash. If you havent allready, install [Git for Windows](https://git-scm.com/install/windows)
+> All commands below are executed through Git bash. If you haven't already, install [Git for Windows](https://git-scm.com/install/windows)
 
 - Install `faas-cli` :
 ```console
@@ -21,7 +21,7 @@ curl -sLSf https://cli.openfaas.com | sh
 ```console
 minikube start -p openfaas-profile --driver=docker
 ```
-- Install Helm with Winget (the pre-install Windows packet manager) :
+- Install Helm with Winget (the pre-installed Windows package manager) :
 ```console
 winget install Helm.Helm
 ``` 
@@ -29,7 +29,7 @@ winget install Helm.Helm
 ```console
 ./bin/install-openfaas.sh
 ``` 
-- Await one or two minutes, the forward the 8080 port :
+- Wait one or two minutes, then forward the 8080 port :
 ```console
 kubectl port-forward svc/gateway -n openfaas 8080:8080
 ```
@@ -48,8 +48,8 @@ faas-cli template store pull python3-flask
 
 ## 3. Available functions
 
-| Function | Base URL | Method | Request body | Successed response body | Error response(s)
+| Function | Base URL | Method | Request body | Successful response body | Error response(s) |
 |----------|----------|----------|----------|----------|----------|
-| generate-password | http://127.0.0.1:8080/function/generate-password | POST | `{ "username": "foo" }` | `{ "message": "User created successfully.", "password": "pwd", "statusCode": 201 }` | `401` if username is missing. `500` if internal server error |
-| generate-2fa | http://127.0.0.1:8080/function/generate-2fa | POST | `{ "username": "foo" }` | `{ "message": "TOTP created successfully.", "totp": "otpauth://totp/COFRAP:foo?secret=123456789ABCDEF&issuer=COFRAP" }` | `401` if username is missing. `500` if internal server error |
-| authenticate | http://127.0.0.1:8080/function/authenticate | POST | `{ "username": "foo", "password": "pwd", "totp_code": 123456 }` | `{ "authenticated": true }` | `401` and `{ "authenticated": false }` if username, password or TOTP code are missing, or if any of these are invalid. `500` if internal server error |
+| generate-password | http://127.0.0.1:8080/function/generate-password | POST | `{ "username": "foo" }` | `{ "message": "User created successfully.", "password": "pwd", "statusCode": 201 }` | `400` if username is missing. `500` if internal server error |
+| generate-2fa | http://127.0.0.1:8080/function/generate-2fa | POST | `{ "username": "foo" }` | `{ "message": "TOTP created successfully.", "totp": "otpauth://totp/COFRAP:foo?secret=123456789ABCDEF&issuer=COFRAP" }` | `400` if username is missing. `500` if internal server error |
+| authenticate | http://127.0.0.1:8080/function/authenticate | POST | `{ "username": "foo", "password": "pwd", "totp_code": 123456 }` | `{ "authenticated": true }` | `400` and `{ "authenticated": false }` if username, password or TOTP code are missing, or if any of these are invalid. `500` if internal server error |

@@ -60,7 +60,6 @@ def handle(req):
         conn.close()
 
         return {
-            "statusCode": 201,
             "message": "User created successfully.",
             "password": pwd
         }, 201
