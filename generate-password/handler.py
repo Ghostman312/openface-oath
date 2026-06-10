@@ -20,6 +20,7 @@ def handle(req):
     try:
         payload = json.loads(req) if req else {}
         username = payload.get("username")
+        is_expired = payload.get("is_expired", False)
 
         if not username:
             return {"statusCode": 400, "body": "Username required."}
@@ -55,8 +56,8 @@ def handle(req):
                 password_hash = EXCLUDED.password_hash,
                 created_at = CURRENT_TIMESTAMP;
             """,
-            (username, hash.decode('utf-8'), datetime.now() + timedelta(days=180)))
-        
+            (username, hash.decode('utf-8'), (datetime.now() if is_expired else datetime.now() + timedelta(days=180))))
+
         conn.commit()
         cur.close()
         conn.close()
