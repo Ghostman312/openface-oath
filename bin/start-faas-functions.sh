@@ -1,17 +1,31 @@
 rm -rf ./build
 
+TEST_ENABLED="${TEST_ENABLED:-true}"
+TEST_COMMAND="${TEST_COMMAND:-python -m pytest -q}"
+
 docker run --rm \
   -v "/$(pwd):/workspace" \
   -w "//workspace" \
-  ghcr.io/openfaas/faas-cli build -f stack.yaml --shrinkwrap
+  ghcr.io/openfaas/faas-cli build -f stack.yaml \
+  --build-arg TEST_ENABLED=${TEST_ENABLED} \
+  --build-arg "TEST_COMMAND=${TEST_COMMAND}" \
+  --shrinkwrap
 
-docker rm -f $(docker ps -a -q --filter ancestor=ttl.sh/cofrap-mspr-generate-password:1m) && docker rmi ttl.sh/cofrap-mspr-generate-password:1m
-docker rm -f $(docker ps -a -q --filter ancestor=ttl.sh/cofrap-mspr-generate-2fa:1m) && docker rmi ttl.sh/cofrap-mspr-generate-2fa:1m
-docker rm -f $(docker ps -a -q --filter ancestor=ttl.sh/cofrap-mspr-authenticate:1m) && docker rmi ttl.sh/cofrap-mspr-authenticate:1m
+ids=$(docker ps -a -q --filter ancestor=ttl.sh/cofrap-mspr-generate-password:1m)
+if [ -n "$ids" ]; then docker rm -f $ids; fi
+docker rmi ttl.sh/cofrap-mspr-generate-password:1m >/dev/null 2>&1 || true
 
-docker build -t ttl.sh/cofrap-mspr-generate-password:1m ./build/generate-password/
-docker build -t ttl.sh/cofrap-mspr-generate-2fa:1m ./build/generate-2fa/
-docker build -t ttl.sh/cofrap-mspr-authenticate:1m ./build/authenticate/
+ids=$(docker ps -a -q --filter ancestor=ttl.sh/cofrap-mspr-generate-2fa:1m)
+if [ -n "$ids" ]; then docker rm -f $ids; fi
+docker rmi ttl.sh/cofrap-mspr-generate-2fa:1m >/dev/null 2>&1 || true
+
+ids=$(docker ps -a -q --filter ancestor=ttl.sh/cofrap-mspr-authenticate:1m)
+if [ -n "$ids" ]; then docker rm -f $ids; fi
+docker rmi ttl.sh/cofrap-mspr-authenticate:1m >/dev/null 2>&1 || true
+
+docker build --no-cache --build-arg TEST_ENABLED=${TEST_ENABLED} --build-arg TEST_COMMAND="${TEST_COMMAND}" -t ttl.sh/cofrap-mspr-generate-password:1m ./build/generate-password/
+docker build --no-cache --build-arg TEST_ENABLED=${TEST_ENABLED} --build-arg TEST_COMMAND="${TEST_COMMAND}" -t ttl.sh/cofrap-mspr-generate-2fa:1m ./build/generate-2fa/
+docker build --no-cache --build-arg TEST_ENABLED=${TEST_ENABLED} --build-arg TEST_COMMAND="${TEST_COMMAND}" -t ttl.sh/cofrap-mspr-authenticate:1m ./build/authenticate/
 
 docker push ttl.sh/cofrap-mspr-generate-password:1m
 docker push ttl.sh/cofrap-mspr-generate-2fa:1m

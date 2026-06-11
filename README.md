@@ -53,3 +53,10 @@ faas-cli template store pull python3-flask
 | generate-password | http://127.0.0.1:8080/function/generate-password | POST | `{ "username": string }` | `{ "message": "User created successfully.", "password": string, "statusCode": 201 }` | `400` if username is missing. `500` if internal server error |
 | generate-2fa | http://127.0.0.1:8080/function/generate-2fa | POST | `{ "username": string }` | `{ "message": "TOTP created successfully.", "totp": string }` | `400` if username is missing. `500` if internal server error |
 | authenticate | http://127.0.0.1:8080/function/authenticate | POST | `{ "username": string, "password": string, "totp_code": number }` | `{ "authenticated": true }` | `400` and `{ "authenticated": false, "expired": false }` if username, password or TOTP code are missing, or if any of these are invalid. `401` and `{ "authenticated": false, "expired": true } if password expired. `500` if internal server error |
+
+## 4. Tests
+
+Tests run when using the start-faas-function script during the build phase. However, if you want to run them locally you can do so by using the following script. **Python must be installed on your device**.
+```console
+./bin/test-functions.sh
+```

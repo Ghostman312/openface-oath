@@ -8,10 +8,13 @@ def handle(req):
     pwd_not_valid = True
     while pwd_not_valid:
         pwd = ''.join(secrets.choice(string.ascii_letters+string.digits+string.punctuation) for i in range(24))
-        pwd_not_valid = (any(c.islower() for c in pwd) and
-                        any(c.isupper() for c in pwd) and
-                        any(c.isdigit() for c in pwd) and
-                        any(c in string.punctuation for c in pwd))
+        # Valid when it contains lowercase, uppercase, digit and punctuation
+        pwd_not_valid = not (
+            any(c.islower() for c in pwd) and
+            any(c.isupper() for c in pwd) and
+            any(c.isdigit() for c in pwd) and
+            any(c in string.punctuation for c in pwd)
+        )
     
     # Encrypt password
     hash = bcrypt.hashpw(pwd.encode('utf-8'), bcrypt.gensalt())
