@@ -60,3 +60,26 @@ Tests run when using the start-faas-function script during the build phase. Howe
 ```console
 ./bin/test-functions.sh
 ```
+
+### 4.A Test scenarios
+
+| ID | Scénario | Entrée | Résultat attendu |
+|----|----------|--------|------------------|
+| T01 | Création d’un mot de passe avec username valide | `{ "username": "testuser" }` | Status `201`, message `User created successfully.`, mot de passe généré de 24 caractères |
+| T02 | Mot de passe sans username | `{ "is_expired": false }` | Status `400`, body `Username required.` |
+| T03 | Requête vide pour generate-password | `null` | Status `400`, body `Username required.` |
+| T04 | Mot de passe généré avec tous les types de caractères | `{ "username": "testuser" }` | Mot de passe contenant au moins une minuscule, une majuscule, un chiffre et un caractère de ponctuation |
+| T05 | Mot de passe expiré à la création | `{ "username": "testuser", "is_expired": true }` | Status `201`, mot de passe enregistré avec une date d’expiration à la date courante |
+| T06 | Mot de passe non expiré à la création | `{ "username": "testuser", "is_expired": false }` | Status `201`, mot de passe enregistré avec une expiration à 180 jours |
+| T07 | Erreur de base de données sur generate-password | `{ "username": "testuser" }` | Status `500`, statut `Error`, détail contenant l’erreur de connexion |
+| T08 | Paramètres de connexion PostgreSQL corrects | `{ "username": "testuser" }` avec variables d’environnement DB | Connexion appelée avec `DB_HOST`, `DB_USER`, `DB_PWD`, `DB_NAME` |
+| T09 | Création TOTP sans username | `null` | Status `400`, body `Username required.` |
+| T10 | Création TOTP avec username valide | `{ "username": "user1" }` | Status `201`, message `TOTP created successfully.`, URI TOTP générée |
+| T11 | Erreur de base de données sur generate-2fa | `{ "username": "user1" }` | Status `500`, statut `Error`, détail contenant l’erreur de connexion |
+| T12 | Authentification avec username inconnu | `{ "username": "nope" }` | Status `400`, `authenticated: false` |
+| T13 | Mot de passe expiré à l’authentification | `{ "username": "user", "password": "p" }` | Status `401`, `expired: true`, message `Password expired. Please renew it.` |
+| T14 | Mot de passe invalide à l’authentification | `{ "username": "user", "password": "bad" }` | Status `400`, `authenticated: false` |
+| T15 | Code TOTP manquant | `{ "username": "user", "password": "p" }` | Status `400`, message `TOTP code required.` |
+| T16 | Code TOTP invalide | `{ "username": "user", "password": "p", "totp_code": "000000" }` | Status `400`, message `Invalid TOTP code.` |
+| T17 | Authentification réussie | `{ "username": "user", "password": "p", "totp_code": "123456" }` | Status `200`, `authenticated: true` |
+| T18 | Erreur de base de données sur authenticate | `{ "username": "user", "password": "p" }` | Status `500`, statut `Error`, détail contenant l’erreur de connexion |
